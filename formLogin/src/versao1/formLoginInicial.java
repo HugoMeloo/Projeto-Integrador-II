@@ -4,6 +4,7 @@
  */
 package versao1;
 
+import Model.CadastroUsuario;
 import javax.swing.JOptionPane;
 
 /**
@@ -137,9 +138,11 @@ public class formLoginInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_bntLimparActionPerformed
 
     private void bntEntrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bntEntrarMouseClicked
+CadastroUsuario us = new CadastroUsuario();
 String login = textLogin.getText();
 String senha = textSenha.getText();
-if ( ! login.equals("admin") || ! senha.equals("1234")) {
+
+if ( ! login.equals(us.cadLogin) || ! senha.equals(us.cadSenha)) {
 JOptionPane.showMessageDialog(null,
 "Usuário ou Senha Inválidos!", "Erro de Operação",
 JOptionPane.WARNING_MESSAGE);
