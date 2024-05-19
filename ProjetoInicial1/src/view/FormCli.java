@@ -51,11 +51,11 @@ public class FormCli extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         cmbnivel = new javax.swing.JComboBox<>();
-        btnNext = new javax.swing.JButton();
         btnBucar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        btnNext = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tela de Cadastro de Usuários");
@@ -137,18 +137,6 @@ public class FormCli extends javax.swing.JFrame {
             }
         });
 
-        btnNext.setText("---->");
-        btnNext.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnNextMouseClicked(evt);
-            }
-        });
-        btnNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextActionPerformed(evt);
-            }
-        });
-
         btnBucar.setText("BUSCAR");
         btnBucar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -193,6 +181,13 @@ public class FormCli extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
         );
+
+        btnNext.setText("Voltar ao Menu");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -283,9 +278,7 @@ public class FormCli extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,11 +343,6 @@ public class FormCli extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTable1KeyPressed
 
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        FormProdutos objBusca = new FormProdutos();
-        objBusca.setVisible(true);
-        this.setVisible(false);     }//GEN-LAST:event_btnNextActionPerformed
-
     private void carregar_usuarios() {
         // método criado para carregar usuaŕios no jtable 
         // do formulário de usuários
@@ -390,9 +378,9 @@ public class FormCli extends javax.swing.JFrame {
             }
 
             // posiciona o focus no textcpf 
-            this.textCpf.grabFocus();
+            this.textNome.grabFocus();
         } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null, err.getMessage());
+            // JOptionPane.showMessageDialog(null, err.getMessage());
         }
     }
 
@@ -415,42 +403,62 @@ public class FormCli extends javax.swing.JFrame {
         /* Antes de mais nada, instancie o objeto Lu a partir da classe Usuario */
         Usuario Lu = new Usuario();
         /* Antes da persistência, enviaremos os dados para o objeto Lu primeiro */
-        if (textCpf.getText() != null && !textCpf.getText().isEmpty()) {
-            Lu.setCpf(this.textCpf.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar CPF");
-        }
-        if (textNome.getText() != null && !textNome.getText().isEmpty()) {
+
+        if (camposObrigatoriosPreenchidos()) {
             Lu.setNome(this.textNome.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar Nome ");
-        }
-        if (textEmail.getText() != null && !textEmail.getText().isEmpty()) {
+            Lu.setCpf(this.textCpf.getText());
             Lu.setEmail(this.textEmail.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar Nome ");
-        }
-        Lu.setCelular(this.textTelefone.getText());
-        Lu.setIdNivel(this.cmbnivel.getSelectedIndex());
-        Lu.setSenha(this.textSenha.getText());
-        /* Para persistir, usaremos o objeto U1 da classe UsuarioDao */
-        Usuariodao u1 = new Usuariodao();
-        /* Para verificar se o usuário existe buscamos o cpf primeiro */
-        ResultSet resul = u1.buscar(Lu);
-        try {
-            if (resul.next()) {
-                u1.alterar(Lu);// caso exista chama u1.alterar()
-            } else {
-                u1.incluir(Lu);// se não existir chama o u1.incluir()
+            Lu.setCelular(this.textTelefone.getText());
+            Lu.setIdNivel(this.cmbnivel.getSelectedIndex());
+            Lu.setSenha(this.textSenha.getText());
+
+            /* Para persistir, usaremos o objeto U1 da classe UsuarioDao */
+            Usuariodao u1 = new Usuariodao();
+            /* Para verificar se o usuário existe buscamos o cpf primeiro */
+            ResultSet resul = u1.buscar(Lu);
+            try {
+                if (resul.next()) {
+                    u1.alterar(Lu);// caso exista chama u1.alterar()
+                } else {
+                    u1.incluir(Lu);// se não existir chama o u1.incluir()
+                }
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null,
+                        err.getMessage());
             }
-        } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null,
-                    err.getMessage());
+            /* Preenche o Jtable no form */
+            this.carregar_usuarios();
         }
-        /* Preenche o Jtable no form */
-        this.carregar_usuarios();
-// }
     }//GEN-LAST:event_btnCadastroMouseClicked
+
+    private boolean camposObrigatoriosPreenchidos() {
+        if (textNome.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Nome.");
+            this.textNome.grabFocus();
+            return false;
+        }
+        if (textCpf.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo CPF.");
+            this.textCpf.grabFocus();
+            return false;
+        }
+        if (textEmail.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Email.");
+            this.textEmail.grabFocus();
+            return false;
+        }
+        if (textTelefone.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Telefone.");
+            this.textTelefone.grabFocus();
+            return false;
+        }
+        if (textSenha.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Senha.");
+            this.textSenha.grabFocus();
+            return false;
+        }
+        return true;
+    }
 
     private void btnBucarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBucarActionPerformed
         // TODO add your handling code here:
@@ -499,7 +507,7 @@ public class FormCli extends javax.swing.JFrame {
         this.textTelefone.setText("");
         this.textEmail.setText("");
         this.cmbnivel.setSelectedIndex(0);
-        this.textCpf.grabFocus();
+        this.textNome.grabFocus();
 
     }//GEN-LAST:event_btnNovoMouseClicked
 
@@ -507,6 +515,11 @@ public class FormCli extends javax.swing.JFrame {
         Usuariodao u = new Usuariodao();
         u.excluir(textCpf.getText());
         this.carregar_usuarios();    }//GEN-LAST:event_btnExcluirMouseClicked
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        Menu objBusca = new Menu();
+        objBusca.setVisible(true);
+        this.setVisible(false);     }//GEN-LAST:event_btnNextActionPerformed
 
     /**
      * @param args the command line arguments
@@ -567,4 +580,8 @@ public class FormCli extends javax.swing.JFrame {
     private javax.swing.JPasswordField textSenha;
     private javax.swing.JTextField textTelefone;
     // End of variables declaration//GEN-END:variables
+
+    private void While(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

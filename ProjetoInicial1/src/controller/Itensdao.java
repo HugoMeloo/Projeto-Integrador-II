@@ -22,6 +22,7 @@ public class Itensdao extends ConectarDao {
         super(); // Executa construtor da classe mãe
     }
 
+
     public void incluirItem(Item obj) {
 
         /*Cria o comando SQL com 5 parâmetros ?, ?, ?, ?, ? */
@@ -33,10 +34,10 @@ public class Itensdao extends ConectarDao {
             ps = mycon.prepareStatement(sql);
 
             // Configura a posição de cada parâmetro começando pelo primeiro
-            ps.setString(1, obj.getProduto());
-            ps.setDouble(2, obj.getQuantidade());
+            ps.setString(1, obj.getCodigoItem());
+            ps.setString(2, obj.getProduto());
             ps.setDouble(3, obj.getPrecoUni());
-            ps.setString(4, obj.getCodigoItem());
+            ps.setDouble(4, obj.getQuantidade());
             ps.setInt(5, obj.getTipoItem());
             ps.execute(); // Finalmente executa o comando sql dentro de ps
             ps.close();// finaliza o comando de execução do sql
@@ -85,13 +86,34 @@ public class Itensdao extends ConectarDao {
             // do ResultSet
             return null;
         }
-        
     }
+
+    public ResultSet buscartodosTipos(Item tipo) {
+        // o comando select traz um conjunto de registros
+        // e armazena dentro de um ResultSet
+        sql = "SELECT * FROM ITENS ORDER BY CASE WHEN tipoItem = ? THEN 0 ELSE 1 END, tipoItem";
+
+        try {   // armazena o comando sql dentro da conexão mycon
+            ps = mycon.prepareStatement(sql);
+            // configura o único parametro existente
+            ps.setInt(1, tipo.getTipoItem());
+
+            // retorna um ResultSet com os registros selecionados
+            return ps.executeQuery();
+
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, "Erro ao Buscar2 achei " + err.getMessage());
+            // Se haver erros exibe a mensagem e returno nulo dentro 
+            // do ResultSet
+            return null;
+        }
+
+    }
+
     public ResultSet buscarItem(Item obj) {
         // para buscar um registro especifico cria-se um sql com um parãmetro chave
         // no caso a busca está sendo feita pelo cpf do usuario
         sql = "SELECT * FROM ITENS WHERE codigoItem = ?";
-
         try {   // liga o sql com a conexão atraveś do objeto ps
             ps = mycon.prepareStatement(sql);
 
@@ -101,12 +123,10 @@ public class Itensdao extends ConectarDao {
             // retorna o registro selecionado
             return ps.executeQuery();
         } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null, "Erro ao Buscar3 usuário!" + err.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao Buscar3 item!" + err.getMessage());
             return null;
         }
     }
-
-    
 
     public void excluirItem(String codigoItem) {
 
@@ -124,6 +144,10 @@ public class Itensdao extends ConectarDao {
         } catch (SQLException err) {
             JOptionPane.showMessageDialog(null, "Erro ao Excluir item!" + err.getMessage());
         }
+    }
+
+    public ResultSet buscarTipo(Item obj) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

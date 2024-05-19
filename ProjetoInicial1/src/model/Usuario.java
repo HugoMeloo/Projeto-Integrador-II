@@ -4,11 +4,14 @@
  */
 package model;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author hugog
  */
 public class Usuario {
+
     private String nome;
     private String cpf;
     private String email;
@@ -20,16 +23,17 @@ public class Usuario {
         return senha;
     }
 
-    public void setSenha ( String senha ) {
+    public void setSenha(String senha) {
         this.senha = senha;
     }
-    
+
     public String getNome() {
         return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
+
     }
 
     public String getCpf() {
@@ -64,6 +68,8 @@ public class Usuario {
         this.idNivel = idNivel;
     }
 
-  
-    
+    private void isEmpty() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

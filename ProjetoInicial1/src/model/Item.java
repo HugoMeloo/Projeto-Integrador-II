@@ -11,7 +11,7 @@ package model;
 public class Item {
 
     private String produto;
-    private double  quantidade;
+    private double quantidade;
     private double precoUni;
     private String codigoIten;
     private int tipoItem;
@@ -55,5 +55,4 @@ public class Item {
     public void setIdItem(int tipoItem) {
         this.tipoItem = tipoItem;
     }
-
 }

@@ -4,15 +4,22 @@
  */
 package view;
 
+import controller.ConectarDao;
 import controller.Itensdao;
-import controller.Usuariodao;
+import controller.TiposDao;
+import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import model.Item;
-import view.FormCli;
+import model.Tipo;
+import view.Menu;
 
 /**
  *
@@ -48,15 +55,19 @@ public class FormProdutos extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         btnNext = new javax.swing.JButton();
         textCod = new javax.swing.JTextField();
+        btnOrd = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         btnNovo = new javax.swing.JButton();
-        bntVoltar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         textProduto1 = new javax.swing.JScrollPane();
         textProduto = new javax.swing.JTextArea();
+        jButton3 = new javax.swing.JButton();
+        tipo = new javax.swing.JLabel();
+        textTipo = new javax.swing.JTextField();
+        btnP = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tela de Cadastro de Produtos");
@@ -69,7 +80,7 @@ public class FormProdutos extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 204, 51));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
-        jLabel1.setText("Cadastro de Itens");
+        jLabel1.setText("Operação");
 
         cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
         cmbTipo.addActionListener(new java.awt.event.ActionListener() {
@@ -102,15 +113,17 @@ public class FormProdutos extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jLabel5.setText("Código do Item:");
 
-        btnNext.setText("---->");
-        btnNext.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnNextMouseClicked(evt);
-            }
-        });
+        btnNext.setText("Voltar ao Menu");
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNextActionPerformed(evt);
+            }
+        });
+
+        btnOrd.setText("Ordenar por Tipos");
+        btnOrd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrdActionPerformed(evt);
             }
         });
 
@@ -119,7 +132,7 @@ public class FormProdutos extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nome do Item", "Quantidade", "Preço Unitário", "Código do Item", "Tipo do Item"
+                "Código do Item", "Nome do Item", "Preço Unitário", "Quantidade", "Tipo do Item"
             }
         ));
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -171,28 +184,45 @@ public class FormProdutos extends javax.swing.JFrame {
             }
         });
 
-        bntVoltar.setText("<----");
-        bntVoltar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                bntVoltarMouseClicked(evt);
-            }
-        });
-        bntVoltar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bntVoltarActionPerformed(evt);
-            }
-        });
-
         jButton2.setText("BUSCAR");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton2MouseClicked(evt);
             }
         });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         textProduto.setColumns(20);
         textProduto.setRows(5);
         textProduto1.setViewportView(textProduto);
+
+        jButton3.setText("Inserir Tipo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        tipo.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        tipo.setText("Insira um novo tipo:");
+        tipo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        textTipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textTipoActionPerformed(evt);
+            }
+        });
+
+        btnP.setText("INSERIR");
+        btnP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -203,74 +233,104 @@ public class FormProdutos extends javax.swing.JFrame {
                 .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textQuantidade, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(textProduto1)
-                    .addComponent(textCod)
-                    .addComponent(textPreco)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(90, 90, 90)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(textQuantidade, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textPreco, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textProduto1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                            .addComponent(textCod, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(bntVoltar)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnNext))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tipo, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(textTipo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnNovo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addComponent(bntCadastrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(90, 90, 90)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                                .addComponent(btnP))
+                            .addComponent(bntCadastrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnOrd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnNext))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnNovo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1)))))
                 .addGap(48, 48, 48))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(249, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(340, 340, 340)
                 .addComponent(jLabel1)
-                .addGap(249, 249, 249))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(33, 33, 33)
-                .addComponent(jLabel5)
+                .addGap(5, 5, 5)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textCod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textCod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addGap(6, 6, 6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(bntCadastrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnNovo)
-                            .addComponent(jButton1))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton3)
+                                .addComponent(btnP))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(35, 35, 35)
+                                .addComponent(bntCadastrar)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton1)
+                                    .addComponent(btnNovo))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton2)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addComponent(btnOrd))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
                         .addComponent(textProduto1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bntVoltar)
-                            .addComponent(btnNext))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btnNext)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        tipo.setVisible(false);
+        textTipo.setVisible(false);
+        btnP.setVisible(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -315,10 +375,10 @@ public class FormProdutos extends javax.swing.JFrame {
 
                 Object[] linhas
                         = {
-                            resul.getString("nomeItem"),
-                            resul.getDouble("quantidade"),
-                            resul.getDouble("precoUni"),
                             resul.getString("codigoItem"),
+                            resul.getString("nomeItem"),
+                            resul.getDouble("precoUni"),
+                            resul.getDouble("quantidade"),
                             resul.getString("tipoItem"),};
 
                 // adiciona uma linha de cada vez no jtable de usuaŕios
@@ -357,10 +417,10 @@ public class FormProdutos extends javax.swing.JFrame {
         ResultSet resul = item.buscarItem(obj);
         try {
             if (resul.next()) {
-                this.textProduto.setText(resul.getString("nomeItem"));
-                this.textQuantidade.setText(resul.getString("quantidade"));
-                this.textPreco.setText(resul.getString("precoUni"));
                 this.textCod.setText(resul.getString("codigoItem"));
+                this.textProduto.setText(resul.getString("nomeItem"));
+                this.textPreco.setText(resul.getString("precoUni"));
+                this.textQuantidade.setText(resul.getString("quantidade"));
                 this.cmbTipo.setSelectedIndex(resul.getInt("tipoItem"));//bo tá aqui
             } else {
                 JOptionPane.showMessageDialog(null, "Produto não encontrado!");
@@ -379,73 +439,107 @@ public class FormProdutos extends javax.swing.JFrame {
         /* Antes de mais nada, instancie o objeto Lu a partir da classe Usuario */
         Item it = new Item();
         /* Antes da persistência, enviaremos os dados para o objeto Lu primeiro */
-
-        if (textProduto.getText() != null && !textProduto.getText().isEmpty()) {
-            it.setProduto(this.textProduto.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar produto");
-        }
-        if (textQuantidade.getText() != null && !textQuantidade.getText().isEmpty()) {
-            it.setQuantidade(Double.parseDouble(this.textQuantidade.getText()));
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar quantidade");
-        }
-        if (textPreco.getText() != null && !textPreco.getText().isEmpty()) {
-            it.setPreco(Double.parseDouble(this.textPreco.getText()));
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar Preço");
-        }
-        if (textCod.getText() != null && !textCod.getText().isEmpty()) {
+        if (camposItensPreenchidos()) {
             it.setCodigoItem(this.textCod.getText());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao cadastrar código");
-        }
-        if (cmbTipo.getSelectedIndex() != -1) { //perguntar pro professor como fazer essa função
+            it.setProduto(this.textProduto.getText());
+            it.setQuantidade(Double.parseDouble(this.textQuantidade.getText()));
+            it.setPreco(Double.parseDouble(this.textPreco.getText()));
             it.setIdItem(this.cmbTipo.getSelectedIndex());
-        } else {
-            JOptionPane.showMessageDialog(null, "Erro ao selecionar tipo");
-        }
-        /* Para persistir, usaremos o objeto U1 da classe UsuarioDao */
-        Itensdao item = new Itensdao();
-        /* Para verificar se o usuário existe buscamos o cpf primeiro */
-        ResultSet resul = item.buscarItem(it);
-        try {
 
-            if (resul.next()) {
-                item.alterarItem(it);// caso exista chama u1.alterar()
-            } else {
-                item.incluirItem(it);// se não existir chama o u1.incluir()
+            /* Para persistir, usaremos o objeto U1 da classe UsuarioDao */
+            Itensdao item = new Itensdao();
+            /* Para verificar se o usuário existe buscamos o cpf primeiro */
+            ResultSet resul = item.buscarItem(it);
+            try {
+
+                if (resul.next()) {
+                    item.alterarItem(it);// caso exista chama u1.alterar()
+                } else {
+                    item.incluirItem(it);// se não existir chama o u1.incluir()
+                }
+
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null,
+                        err.getMessage());
             }
-
-        } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null,
-                    err.getMessage());
+            /* Preenche o Jtable no form */
+            this.carregar_Item();
         }
-        /* Preenche o Jtable no form */
-        this.carregar_Item();
-// 
     }//GEN-LAST:event_bntCadastrarMouseClicked
 
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNextActionPerformed
+    private boolean camposItensPreenchidos() {
+        if (textCod.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Código.");
+            textCod.requestFocus(); // Foca no campo Código
+            return false;
+        }
+        if (textProduto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Produto.");
+            textProduto.requestFocus(); // Foca no campo Produto
+            return false;
+        }
 
-    private void btnNextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMouseClicked
-        TelaBusca objBusca = new TelaBusca();
+        if (textPreco.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Preço.");
+            textPreco.requestFocus(); // Foca no campo Preço
+            return false;
+        }
+        if (textQuantidade.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o campo Quantidade.");
+            textQuantidade.requestFocus(); // Foca no campo Quantidade
+            return false;
+        }
+
+        if (cmbTipo.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um tipo.");
+            cmbTipo.requestFocus(); // Foca no ComboBox cmbTipo
+            return false;
+        }
+        return true;
+    }
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        Menu objBusca = new Menu();
         objBusca.setVisible(true);
-        this.setVisible(false);    }//GEN-LAST:event_btnNextMouseClicked
+        this.setVisible(false);
+
+    }//GEN-LAST:event_btnNextActionPerformed
+    public PreparedStatement ps;// objeto de preparação do comando SQL
+    public String sql = null;
+    public Connection mycon = null;
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-// captura o modelo do combobox para inserir itens
-        DefaultComboBoxModel mymodel = (DefaultComboBoxModel) this.cmbTipo.getModel();
-        mymodel.removeAllElements(); // remove todos os elementos do combobox
-        mymodel.addElement(""); // adiciona o primeiro elemento vazio
-        mymodel.addElement("Acessórios"); // adiciona o item operador
-        mymodel.addElement("Elétricos"); // adiciona o item gerente
-        mymodel.addElement("Mecânicos"); // adiciona o item cliente
+        DefaultComboBoxModel<String> myModel = new DefaultComboBoxModel<>();
+        cmbTipo.setModel(myModel);
+        String strcon = "jdbc:mysql://localhost:3306/projcad"; // Inclua o nome do seu banco de dados
+        try {
+            mycon = DriverManager.getConnection(strcon, "root", "");
+            mycon.setCatalog("projcad"); // Selecione o banco de dados
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Conexão com MySQL não realizada!\n" + ex.getMessage());
+        }
+        try {
+            ps = mycon.prepareStatement("SELECT * FROM TIPOS");
 
-        carregar_Item(); // chama o método carregar_item para preencher o jtable
+            ResultSet rs = ps.executeQuery();
 
+            myModel.addElement(""); // Adiciona um elemento vazio
+            myModel.addElement("Acessórios");
+            myModel.addElement("Elétricos");
+            myModel.addElement("Mecânicos");
+
+            while (rs.next()) {
+                String tipo = rs.getString("novoTipo");
+                myModel.addElement(tipo);
+
+            }
+            ps.close();
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, "Erro ao selecionar tabela TIPOS!\n" + err.getMessage());
+        }
+        Tipo tp = new Tipo();
+        tp.atualiza(myModel);
+        carregar_Item();
      }//GEN-LAST:event_formWindowOpened
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -474,25 +568,12 @@ public class FormProdutos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnNovoActionPerformed
 
-    private void bntVoltarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bntVoltarMouseClicked
-        FormCli objBusca = new FormCli();
-        objBusca.setVisible(true);
-        this.setVisible(false);
-
-
-    }//GEN-LAST:event_bntVoltarMouseClicked
-
-    private void bntVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntVoltarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bntVoltarActionPerformed
-
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
 // instancia a classe Usuario model
         Item obj = new Item();
         // executa o método setcpf para preencher o cpf
 
         obj.setCodigoItem(this.textCod.getText());
-
         // instancia o objeto Controller Usariodao
         Itensdao it = new Itensdao();
 
@@ -516,6 +597,134 @@ public class FormProdutos extends javax.swing.JFrame {
         } catch (SQLException err) {
 
         }     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnOrdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdActionPerformed
+        // método criado para carregar itens no jtable 
+        // do formulário de itens
+        Item obj = new Item();
+
+        // captura o modelo definido do jtable no formulário de usuários
+        DefaultTableModel mytbmodel = (DefaultTableModel) jTable1.getModel();
+
+        obj.setIdItem(this.cmbTipo.getSelectedIndex());
+
+        // instancia o objeto Controller Usariodao
+        Itensdao it = new Itensdao();
+
+        // executa o método buscar e coloca os registros dentro 
+        // do ResultSet resul 
+        ResultSet resul = it.buscartodosTipos(obj);
+        try {
+
+            // apagar todas as linhas do Jtable
+            while (jTable1.getModel().getRowCount() > 0) {
+                ((DefaultTableModel) jTable1.getModel()).removeRow(0);
+            }
+
+// laço para pegar os registros retornadas na ResultSet resul
+            while (resul.next()) {
+                // cria um array para armazenar cada linha com os 4 campos
+                // puxados da tabela resul de usuários
+
+                Object[] linhas
+                        = {
+                            resul.getString("nomeItem"),
+                            resul.getDouble("quantidade"),
+                            resul.getDouble("precoUni"),
+                            resul.getString("codigoItem"),
+                            resul.getString("tipoItem"),};
+
+                // adiciona uma linha de cada vez no jtable de usuaŕios
+                mytbmodel.addRow(linhas);
+            }
+
+            // posiciona o focus no textPoduto
+            this.textProduto1.grabFocus();
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, err.getMessage());
+        }
+    }//GEN-LAST:event_btnOrdActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        jButton3.setVisible(false);
+        textTipo.setVisible(true);
+        tipo.setVisible(true);
+        btnP.setVisible(true);
+
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void textTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textTipoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textTipoActionPerformed
+
+    private boolean camposTiposPreenchidos() {
+        if (textTipo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o tipo.");
+            textTipo.requestFocus(); // Foca no campo Código
+            return false;
+        }
+        return true;
+    }
+
+    private void btnPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPActionPerformed
+
+        Tipo it = new Tipo();
+        /* Antes da persistência, enviaremos os dados para o objeto Lu primeiro */
+        if (camposTiposPreenchidos()) {
+            it.setNovoTipo(this.textTipo.getText());
+
+            TiposDao tipo = new TiposDao();
+            ResultSet resul = tipo.buscarTipo(it);
+            try {
+
+                if (resul.next()) {
+                    tipo.alterarTipo(it);// caso exista chama u1.alterar()
+                } else {
+                    tipo.incluirTipo(it);// se não existir chama o u1.incluir()
+                }
+
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null,
+                        err.getMessage());
+            }
+            DefaultComboBoxModel<String> myModel = new DefaultComboBoxModel<>();
+            cmbTipo.setModel(myModel);
+            String strcon = "jdbc:mysql://localhost:3306/projcad"; // Inclua o nome do seu banco de dados
+            try {
+                mycon = DriverManager.getConnection(strcon, "root", "");
+                mycon.setCatalog("projcad"); // Selecione o banco de dados
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Conexão com MySQL não realizada!\n" + ex.getMessage());
+            }
+            try {
+                ps = mycon.prepareStatement("SELECT * FROM TIPOS");
+
+                ResultSet rs = ps.executeQuery();
+
+                myModel.addElement(""); // Adiciona um elemento vazio
+                myModel.addElement("Acessórios");
+                myModel.addElement("Elétricos");
+                myModel.addElement("Mecânicos");
+
+                while (rs.next()) {
+                    String tipo1 = rs.getString("novoTipo");
+                    myModel.addElement(tipo1);
+
+                }
+                ps.close();
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null, "Erro ao selecionar tabela TIPOS!\n" + err.getMessage());
+            }
+            Tipo tp = new Tipo();
+            tp.atualiza(myModel);
+            carregar_Item();
+        }
+    }//GEN-LAST:event_btnPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -554,12 +763,14 @@ public class FormProdutos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntCadastrar;
-    private javax.swing.JButton bntVoltar;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnNovo;
+    private javax.swing.JButton btnOrd;
+    private javax.swing.JButton btnP;
     private javax.swing.JComboBox<String> cmbTipo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -574,5 +785,11 @@ public class FormProdutos extends javax.swing.JFrame {
     private javax.swing.JTextArea textProduto;
     private javax.swing.JScrollPane textProduto1;
     private javax.swing.JTextField textQuantidade;
+    private javax.swing.JTextField textTipo;
+    private javax.swing.JLabel tipo;
     // End of variables declaration//GEN-END:variables
+
+    private String getText(DefaultComboBoxModel<String> myModel) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

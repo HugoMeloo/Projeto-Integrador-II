@@ -151,14 +151,14 @@ public class TelaLogin extends javax.swing.JFrame {
             ResultSet resul = u1.validarLogin(login, senha);
 
             if (resul.next() || (login.equals("admin") && senha.equals("1234"))) {
-                FormCli objCli = new FormCli();
+                Menu objCli = new Menu();
                 objCli.setVisible(true);
                 if (login.equals("admin")) {
                     nivel = "Administrador";
                 } else {
                     nivel = resul.getString("nivel");
                 }
-                objCli.setTitle("Usuário Logado - " + login + "  (" + nivel + ") ");
+                objCli.setTitle("[Menu] " + "Usuário Logado - " + login + "  (" + nivel + ") ");
                 this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null,

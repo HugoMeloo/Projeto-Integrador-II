@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import model.Item;
+import model.Tipo;
 import model.Usuario;
 
 public class ConectarDao {
@@ -14,7 +15,7 @@ public class ConectarDao {
     public String sql = null;
 
     public ConectarDao() {
-        String strcon = "jdbc:mysql://localhost:3306/ProjCad";//cria a string de conexão ao servidor xaamp 
+        String strcon = "jdbc:mysql://localhost:3306";//cria a string de conexão ao servidor xaamp 
         try {
 
             mycon = DriverManager.getConnection(strcon, "root", "");
@@ -26,6 +27,22 @@ public class ConectarDao {
     }
 
     public void criarBanco() {
+        sql = " CREATE DATABASE IF NOT EXISTS projcad";
+        try {
+            PreparedStatement ps = mycon.prepareStatement(sql);
+            ps.execute();
+            ps.close();
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar banco projcad!\n" + err.getMessage());
+        }
+        sql = "USE projcad";
+        try {
+            PreparedStatement ps = mycon.prepareStatement(sql);
+            ps.execute();
+            ps.close();
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar banco projcad!\n" + err.getMessage());
+        }
         sql = " CREATE TABLE IF NOT EXISTS NIVEIS ("
                 + "idNivel int not null AUTO_INCREMENT, "
                 + "desNivel varchar(30) not null, "
@@ -39,8 +56,8 @@ public class ConectarDao {
             JOptionPane.showMessageDialog(null, "Erro ao criar table Nivel!\n" + err.getMessage());
         }
         sql = " CREATE TABLE IF NOT EXISTS USUARIOS ("
-                + "cpf varchar (12) not null, "
                 + "nome varchar(50) not null, "
+                + "cpf varchar (12) not null, "
                 + "email varchar(50) not null, "
                 + "celular varchar(20) not null,"
                 + "idNivel int not null, senha varchar(20) not null,  "
@@ -54,10 +71,10 @@ public class ConectarDao {
         }
 
         sql = " CREATE TABLE IF NOT EXISTS ITENS ("
-                + "nomeItem varchar(50) not null, "
-                + "quantidade int (50) not null, "
-                + "precoUni int(50) not null,"
                 + "codigoItem varchar(20) not null, "
+                + "nomeItem varchar(50) not null, "
+                + "precoUni int(50) not null,"
+                + "quantidade int (50) not null, "
                 + "tipoItem int not null,"
                 + "primary key (codigoItem)"
                 + ");";
@@ -67,6 +84,17 @@ public class ConectarDao {
             ps.close();
         } catch (SQLException err) {
             JOptionPane.showMessageDialog(null, "Erro ao criar tabela Itens \n" + err.getMessage());
+        }
+        sql = " CREATE TABLE IF NOT EXISTS TIPOS ("
+                + "novoTipo VARCHAR(20) NOT NULL,"
+                + "PRIMARY KEY (novoTipo)"
+                + ");";
+        try {
+            PreparedStatement ps = mycon.prepareStatement(sql);
+            ps.execute();
+            ps.close();
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar tabela Tipos \n" + err.getMessage());
         }
     }
 
@@ -105,6 +133,20 @@ public class ConectarDao {
         } catch (SQLException err) {
             JOptionPane.showMessageDialog(null,
                     "Erro ao Alterar Item!" + err.getMessage());
+        }
+    }
+
+    public void alterarTipo(Tipo obj) {
+        sql = "UPDATE TIPO SET novoTipo = ?";
+        try {
+            PreparedStatement ps = mycon.prepareStatement(sql);
+            ps.setString(1, obj.getNovoTipo());
+            ps.execute();
+            ps.close();
+            JOptionPane.showMessageDialog(null, "Tipo Alterado com Sucesso!");
+        } catch (SQLException err) {
+            JOptionPane.showMessageDialog(null,
+                    "Erro ao Alterar Tipo!" + err.getMessage());
         }
     }
 

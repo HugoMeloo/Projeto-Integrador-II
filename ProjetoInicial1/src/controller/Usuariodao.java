@@ -33,8 +33,8 @@ public class Usuariodao extends ConectarDao {
             ps = mycon.prepareStatement(sql);
 
             // Configura a posição de cada parâmetro começando pelo primeiro
-            ps.setString(1, obj.getCpf());
-            ps.setString(2, obj.getNome());
+            ps.setString(1, obj.getNome());
+            ps.setString(2, obj.getCpf());
             ps.setString(3, obj.getEmail());
             ps.setString(4, obj.getCelular());
             ps.setInt(5, obj.getIdNivel());
