@@ -121,10 +121,10 @@ public class ConectarDao {
         sql = "UPDATE ITENS SET nomeItem = ?, quantidade = ?, precoUni = ?, codigoItem = ?, tipoItem = ?";
         try {
             PreparedStatement ps = mycon.prepareStatement(sql);
-            ps.setString(1, obj.getProduto());
-            ps.setDouble(2, obj.getQuantidade());
+            ps.setString(1, obj.getCodigoItem());
+            ps.setString(2, obj.getProduto());
             ps.setDouble(3, obj.getPrecoUni());
-            ps.setString(4, obj.getCodigoItem());
+            ps.setDouble(4, obj.getQuantidade());
             ps.setInt(5, obj.getTipoItem());
 
             ps.execute();

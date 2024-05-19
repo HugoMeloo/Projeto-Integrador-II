@@ -78,19 +78,17 @@
                               <Component id="textSenha" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cmbnivel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="btnCadastro" alignment="0" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="btnNovo" min="-2" pref="100" max="-2" attributes="0"/>
-                                      <EmptySpace pref="43" max="32767" attributes="0"/>
-                                      <Component id="btnExcluir" min="-2" pref="100" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="btnBucar" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cmbnivel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnCadastro" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnNovo" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <EmptySpace pref="43" max="32767" attributes="0"/>
+                                  <Component id="btnExcluir" min="-2" pref="100" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="btnNext" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnBucar" max="32767" attributes="0"/>
+                              <Component id="btnNext" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       </Group>
@@ -225,6 +223,7 @@
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnCadastroMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCadastroActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnNovo">

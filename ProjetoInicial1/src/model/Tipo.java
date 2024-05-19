@@ -4,9 +4,6 @@
  */
 package model;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-
 /**
  *
  * @author hugog
@@ -14,15 +11,6 @@ import javax.swing.DefaultComboBoxModel;
 public class Tipo {
 
     String novoTipo;
-    DefaultComboBoxModel novo;
-
-    public void atualiza(DefaultComboBoxModel novo) {
-        this.novo = novo;
-    }
-
-    public DefaultComboBoxModel getAtualizou() {
-        return novo;
-    }
 
     public String getNovoTipo() {
         return novoTipo;
