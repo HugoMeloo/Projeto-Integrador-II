@@ -108,21 +108,25 @@ public class Usuariodao extends ConectarDao {
     }
 
     public void excluir(String cpf) {
+        if (!cpf.isEmpty()) {
+            // configura o comando sql de exclusão delete por cpf
+            sql = "DELETE FROM USUARIOS WHERE CPF = '" + cpf + "'";
 
-        // configura o comando sql de exclusão delete por cpf
-        sql = "DELETE FROM USUARIOS WHERE CPF = '" + cpf + "'";
+            try { // envia o comando sql para dentro da conexão através de ps
+                ps = mycon.prepareStatement(sql);
+                // executa o comando delete dentro do mysql
+                ps.execute();
 
-        try { // envia o comando sql para dentro da conexão através de ps
-            ps = mycon.prepareStatement(sql);
-            // executa o comando delete dentro do mysql
-            ps.execute();
+                ps.close(); // fecha o objeto usado para executar o comando sql
 
-            ps.close(); // fecha o objeto usado para executar o comando sql
+                JOptionPane.showMessageDialog(null, "Registro Excluido com Sucesso!");
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null, "Erro ao Excluir usuário!" + err.getMessage());
+            }
 
-            JOptionPane.showMessageDialog(null, "Registro Excluido com Sucesso!");
-        } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null, "Erro ao Excluir usuário!" + err.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(null, "Escolha um usuário válido!");
+
         }
-
     }
 }

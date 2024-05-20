@@ -22,7 +22,6 @@ public class Itensdao extends ConectarDao {
         super(); // Executa construtor da classe mãe
     }
 
-
     public void incluirItem(Item obj) {
 
         /*Cria o comando SQL com 5 parâmetros ?, ?, ?, ?, ? */
@@ -129,20 +128,23 @@ public class Itensdao extends ConectarDao {
     }
 
     public void excluirItem(String codigoItem) {
+        if (!codigoItem.isEmpty()) {
+            // configura o comando sql de exclusão delete por cpf
+            sql = "DELETE FROM ITENS WHERE codigoItem= '" + codigoItem + "'";
 
-        // configura o comando sql de exclusão delete por cpf
-        sql = "DELETE FROM ITENS WHERE codigoItem= '" + codigoItem + "'";
+            try { // envia o comando sql para dentro da conexão através de ps
+                ps = mycon.prepareStatement(sql);
+                // executa o comando delete dentro do mysql
+                ps.execute();
 
-        try { // envia o comando sql para dentro da conexão através de ps
-            ps = mycon.prepareStatement(sql);
-            // executa o comando delete dentro do mysql
-            ps.execute();
+                ps.close(); // fecha o objeto usado para executar o comando sql
 
-            ps.close(); // fecha o objeto usado para executar o comando sql
-
-            JOptionPane.showMessageDialog(null, "Item Excluido com Sucesso!");
-        } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null, "Erro ao Excluir item!" + err.getMessage());
+                JOptionPane.showMessageDialog(null, "Item Excluido com Sucesso!");
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null, "Erro ao Excluir item!" + err.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Escolha um item válido!");
         }
     }
 

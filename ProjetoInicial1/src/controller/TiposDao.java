@@ -58,20 +58,24 @@ public class TiposDao extends ConectarDao {
     }
 
     public void excluirTipo(String textTipo) {
+        if (!textTipo.isEmpty()) {
+            // configura o comando sql de exclusão delete por cpf
+            sql = "DELETE FROM TIPOS WHERE novoTipo = '" + textTipo + "'";
 
-        // configura o comando sql de exclusão delete por cpf
-        sql = "DELETE FROM TIPOS WHERE novoTipo = '" + textTipo + "'";
+            try { // envia o comando sql para dentro da conexão através de ps
+                ps = mycon.prepareStatement(sql);
+                // executa o comando delete dentro do mysql
+                ps.execute();
 
-        try { // envia o comando sql para dentro da conexão através de ps
-            ps = mycon.prepareStatement(sql);
-            // executa o comando delete dentro do mysql
-            ps.execute();
+                ps.close(); // fecha o objeto usado para executar o comando sql
 
-            ps.close(); // fecha o objeto usado para executar o comando sql
+                JOptionPane.showMessageDialog(null, "Tipo Excluido com Sucesso!");
+            } catch (SQLException err) {
+                JOptionPane.showMessageDialog(null, "Erro ao Excluir Tipo!" + err.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Escolha um tipo válido!");
 
-            JOptionPane.showMessageDialog(null, "Tipo Excluido com Sucesso!");
-        } catch (SQLException err) {
-            JOptionPane.showMessageDialog(null, "Erro ao Excluir Tipo!" + err.getMessage());
         }
     }
 }

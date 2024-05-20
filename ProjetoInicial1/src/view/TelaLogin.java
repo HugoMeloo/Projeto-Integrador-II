@@ -152,6 +152,8 @@ public class TelaLogin extends javax.swing.JFrame {
 
             if (resul.next() || (login.equals("admin") && senha.equals("1234"))) {
                 Menu objCli = new Menu();
+                FormProdutos fp = new FormProdutos();
+                FormCli fc = new FormCli();
                 objCli.setVisible(true);
                 if (login.equals("admin")) {
                     nivel = "Administrador";
@@ -159,6 +161,8 @@ public class TelaLogin extends javax.swing.JFrame {
                     nivel = resul.getString("nivel");
                 }
                 objCli.setTitle("[Menu] " + "Usuário Logado - " + login + "  (" + nivel + ") ");
+                fp.setTitle("[Operação] " + "Usuário Logado - " + login + "  (" + nivel + ") ");
+                fc.setTitle("[Cadastro] " + "Usuário Logado - " + login + "  (" + nivel + ") ");
                 this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null,

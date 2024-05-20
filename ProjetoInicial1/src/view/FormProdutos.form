@@ -149,8 +149,9 @@
                               <Component id="btnExcluirTipo" pref="33" max="32767" attributes="0"/>
                               <Component id="btnP" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="bntCadastrar" min="-2" pref="34" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -421,7 +422,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnExcluirTipo">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Excluir Tipo"/>
+            <Property name="text" type="java.lang.String" value="EXCLUIR TIPO"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcluirTipoActionPerformed"/>
