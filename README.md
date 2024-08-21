@@ -1,2 +1,2 @@
 # Projeto-Integrador-II
-Repositório feito para guardar os principais códigos e atualizações do projeto integrador: desenvolvimento estruturado de sistemas.
+Projeto de gerenciamento de estoque realizado no segundo semestre do curso de Análise e Desenvolvimento de Sistemas, fundamentado em Java Orientado a Objetos com a utilização de interfaces gráficas via NetBeans.
